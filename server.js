@@ -15,14 +15,26 @@ app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, 'client/build')));
 
-app.get('/api/articles', (req, res) => {
-	db.Article
-      .find(req.query)
-      .sort({ date: -1 })
-      .then(dbModel => res.json(dbModel))
-      .catch(err => res.status(422).json(err));
-})
+app.get('/api/articles', articlesController.findAll)
+	.post('/api/articles', articlesController.create);
 
+app.delete('/api/articles/:id', articlesController.remove);
+
+// app.get('/api/articles', (req, res) => {
+// 	db.Article
+//       .find(req.query)
+//       .sort({ date: -1 })
+//       .then(dbModel => res.json(dbModel))
+//       .catch(err => res.status(422).json(err));
+// })
+
+// app.get('/api/articles', (req, res) => {
+// 	db.Article
+//       .find(req.query)
+//       .sort({ date: -1 })
+//       .then(dbModel => res.json(dbModel))
+//       .catch(err => res.status(422).json(err));
+// })
 // const routes = () => {router
 // 		.route('/api/articles/')
 // 		.get(articlesController.findAll)
@@ -32,11 +44,9 @@ app.get('/api/articles', (req, res) => {
 // app.use(routes)
 
 
-router
-	.route('*')
-	.get((req, res) => {
-		res.sendFile(path.join(__dirname + '/client/build/index.html'));
-	})
+app.get('*', (req, res) => {
+	res.sendFile(path.join(__dirname + '/client/build/index.html'));
+})
 
 const PORT = process.env.PORT || 8080;
 
